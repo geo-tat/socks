@@ -56,22 +56,25 @@ public class SocksServiceImpl implements SocksService {
 
 @Override
 public Long getSocks(Color color, ComparisonOperator operator, int cottonPercentage) {
+//
+//    Long quantity;
+//    switch (operator) {
+//        case MORE_THAN:
+//            quantity = socksRepository.findTotalQuantityByColorAndCottonPercentageGreaterThan(color, cottonPercentage);
+//            break;
+//        case LESS_THAN:
+//            quantity = socksRepository.findTotalQuantityByColorAndCottonPercentageLessThan(color, cottonPercentage);
+//            break;
+//        case EQUAL:
+//            quantity = socksRepository.findTotalQuantityByColorAndCottonPercentageEquals(color, cottonPercentage);
+//            break;
+//        default:
+//            throw new IllegalArgumentException("Invalid comparison operator: " + operator);
+//    }
+//    return quantity != null ? quantity : 0;
 
-    Long quantity;
-    switch (operator) {
-        case MORE_THAN:
-            quantity = socksRepository.findTotalQuantityByColorAndCottonPercentageGreaterThan(color, cottonPercentage);
-            break;
-        case LESS_THAN:
-            quantity = socksRepository.findTotalQuantityByColorAndCottonPercentageLessThan(color, cottonPercentage);
-            break;
-        case EQUAL:
-            quantity = socksRepository.findTotalQuantityByColorAndCottonPercentageEquals(color, cottonPercentage);
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid comparison operator: " + operator);
-    }
-    return quantity != null ? quantity : 0;
+    Long quantity = socksRepository.findTotalQuantityByCriteria(color, cottonPercentage, operator);
+    return quantity != null ? quantity : 0L;
 }
 
 @Override
