@@ -73,7 +73,6 @@ public class CustomSocksRepositoryImpl implements CustomSocksRepository {
 
         List<Predicate> predicates = new ArrayList<>();
 
-
         if (minCottonPercentage != null) {
             predicates.add(cb.greaterThanOrEqualTo(root.get("cottonPercentage"), minCottonPercentage));
         }
@@ -82,10 +81,8 @@ public class CustomSocksRepositoryImpl implements CustomSocksRepository {
             predicates.add(cb.lessThanOrEqualTo(root.get("cottonPercentage"), maxCottonPercentage));
         }
 
-        // Устанавливаем предикаты для запроса
         query.where(predicates.toArray(new Predicate[0]));
 
-        // Сортировка
         if (sortBy != null) {
             if (sortBy.equalsIgnoreCase("color")) {
                 if (ascending) {

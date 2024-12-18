@@ -4,7 +4,6 @@ import com.geotat.socks.dto.SocksDtoIn;
 import com.geotat.socks.enums.Color;
 import com.geotat.socks.enums.ComparisonOperator;
 import com.geotat.socks.model.Socks;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
