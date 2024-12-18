@@ -1,0 +1,4 @@
+color,cottonPercentage,quantity
+GREEN,50,100
+BLUE,60,200
+YELLOW,70,150

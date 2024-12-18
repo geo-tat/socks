@@ -72,4 +72,16 @@ public class ErrorHandler {
                 LocalDateTime.now()
         );
     }
+
+    @ExceptionHandler(InvalidFormatFileException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidFormatFileException(final InvalidFormatFileException e) {
+        log.error("Invalid value for Enum class Color", e);
+        return new ErrorResponse(
+                e.getClass().getSimpleName(),
+                Arrays.stream(e.getStackTrace()).findFirst().toString(),
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+    }
 }
