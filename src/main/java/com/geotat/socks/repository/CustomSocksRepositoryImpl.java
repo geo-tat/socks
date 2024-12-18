@@ -2,6 +2,7 @@ package com.geotat.socks.repository;
 
 import com.geotat.socks.enums.Color;
 import com.geotat.socks.enums.ComparisonOperator;
+import com.geotat.socks.exception.NotValidParametersException;
 import com.geotat.socks.model.Socks;
 import org.springframework.stereotype.Repository;
 
@@ -21,14 +22,16 @@ public class CustomSocksRepositoryImpl implements CustomSocksRepository {
     private EntityManager entityManager;
 
     @Override
-    public Long findTotalQuantityByCriteria(Color color, int cottonPercentage, ComparisonOperator operator) {
+    public Long findTotalQuantityByCriteria(Color color, Integer cottonPercentage, ComparisonOperator operator) {
+
+        if ((cottonPercentage == null && operator != null) || (cottonPercentage != null && operator == null)) {
+            throw new NotValidParametersException("Invalid filter parameters: both cottonPercentage and operator must be specified together.");
+        }
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Socks> root = query.from(Socks.class);
 
-
         query.select(cb.sum(root.get("quantity")));
-
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -36,22 +39,25 @@ public class CustomSocksRepositoryImpl implements CustomSocksRepository {
             predicates.add(cb.equal(root.get("color"), color));
         }
 
-        switch (operator) {
-            case MORE_THAN:
-                predicates.add(cb.greaterThan(root.get("cottonPercentage"), cottonPercentage));
-                break;
-            case LESS_THAN:
-                predicates.add(cb.lessThan(root.get("cottonPercentage"), cottonPercentage));
-                break;
-            case EQUAL:
-                predicates.add(cb.equal(root.get("cottonPercentage"), cottonPercentage));
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid comparison operator: " + operator);
+        if (cottonPercentage != null && operator != null) {
+            switch (operator) {
+                case MORE_THAN:
+                    predicates.add(cb.greaterThan(root.get("cottonPercentage"), cottonPercentage));
+                    break;
+                case LESS_THAN:
+                    predicates.add(cb.lessThan(root.get("cottonPercentage"), cottonPercentage));
+                    break;
+                case EQUAL:
+                    predicates.add(cb.equal(root.get("cottonPercentage"), cottonPercentage));
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid comparison operator: " + operator);
+            }
         }
+        query.where(predicates.toArray(new Predicate[0]));
 
-        query.where(cb.and(predicates.toArray(new Predicate[0])));
-
-        return entityManager.createQuery(query).getSingleResult();
+        Long result = entityManager.createQuery(query).getSingleResult();
+        return result != null ? result : 0L;
     }
+
 }

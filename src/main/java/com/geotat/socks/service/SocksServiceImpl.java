@@ -55,7 +55,7 @@ public class SocksServiceImpl implements SocksService {
     }
 
 @Override
-public Long getSocks(Color color, ComparisonOperator operator, int cottonPercentage) {
+public Long getSocks(Color color, ComparisonOperator operator, Integer cottonPercentage) {
 //
 //    Long quantity;
 //    switch (operator) {

@@ -43,8 +43,8 @@ public class SocksController {
     @GetMapping
     public ResponseEntity<Long> getSocks(
             @RequestParam(required = false) Color color,
-            @RequestParam ComparisonOperator operator,
-            @RequestParam int cottonPercentage
+            @RequestParam(required = false) ComparisonOperator operator,
+            @RequestParam(required = false) Integer cottonPercentage
     ) {
         Long result = socksService.getSocks(color, operator, cottonPercentage);
         return ResponseEntity.ok(result);

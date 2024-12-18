@@ -6,5 +6,5 @@ import com.geotat.socks.enums.ComparisonOperator;
 
 
 public interface CustomSocksRepository {
-    Long findTotalQuantityByCriteria(Color color, int cottonPercentage, ComparisonOperator operator);
+    Long findTotalQuantityByCriteria(Color color, Integer cottonPercentage, ComparisonOperator operator);
 }
