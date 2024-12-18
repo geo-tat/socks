@@ -83,12 +83,6 @@ public class SocksServiceImpl implements SocksService {
     @Override
     public void uploadSocksBatch(MultipartFile file) {
 
-    }
-
-    @Override
-    public List<Socks> getSocksByPercentageRange(Integer minCottonPercentage, Integer maxCottonPercentage, String sortBy, boolean ascending) {
-        return socksRepository.findSocksByCottonPercentageRangeAndSort(minCottonPercentage,maxCottonPercentage,sortBy,ascending);
-    }
         try (CSVReader csvReader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
             String[] line;
             List<SocksDtoIn> socksList = new ArrayList<>();
@@ -126,5 +120,12 @@ public class SocksServiceImpl implements SocksService {
         } catch (Exception e) {
             throw new InvalidFormatFileException("Error processing the CSV file");
         }
+    }
+
+    @Override
+    public List<Socks> getSocksByPercentageRange(Integer minCottonPercentage, Integer maxCottonPercentage,
+                                                 String sortBy, boolean ascending) {
+        return socksRepository.findSocksByCottonPercentageRangeAndSort(minCottonPercentage,
+                maxCottonPercentage,sortBy,ascending);
     }
 }
