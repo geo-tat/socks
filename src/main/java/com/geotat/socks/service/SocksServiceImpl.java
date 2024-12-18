@@ -10,10 +10,12 @@ import com.geotat.socks.exception.NotValidParametersException;
 import com.geotat.socks.exception.SocksNotEnoughException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -54,43 +56,33 @@ public class SocksServiceImpl implements SocksService {
         socksRepository.save(existingSocks);
     }
 
-@Override
-public Long getSocks(Color color, ComparisonOperator operator, Integer cottonPercentage) {
-//
-//    Long quantity;
-//    switch (operator) {
-//        case MORE_THAN:
-//            quantity = socksRepository.findTotalQuantityByColorAndCottonPercentageGreaterThan(color, cottonPercentage);
-//            break;
-//        case LESS_THAN:
-//            quantity = socksRepository.findTotalQuantityByColorAndCottonPercentageLessThan(color, cottonPercentage);
-//            break;
-//        case EQUAL:
-//            quantity = socksRepository.findTotalQuantityByColorAndCottonPercentageEquals(color, cottonPercentage);
-//            break;
-//        default:
-//            throw new IllegalArgumentException("Invalid comparison operator: " + operator);
-//    }
-//    return quantity != null ? quantity : 0;
+    @Override
+    public Long getSocks(Color color, ComparisonOperator operator, Integer cottonPercentage) {
+        Long quantity = socksRepository.findTotalQuantityByCriteria(color, cottonPercentage, operator);
+        return quantity != null ? quantity : 0L;
+    }
 
-    Long quantity = socksRepository.findTotalQuantityByCriteria(color, cottonPercentage, operator);
-    return quantity != null ? quantity : 0L;
-}
+    @Override
+    public void updateSocks(UUID id, SocksDtoIn dto) {
+        Socks existingSocks = socksRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Socks not found with id: " + id));
+        if (dto.getColor() != null)
+            existingSocks.setColor(dto.getColor());
+        if (dto.getCottonPercentage() != null)
+            existingSocks.setCottonPercentage(dto.getCottonPercentage());
+        if (dto.getQuantity() != null)
+            existingSocks.setQuantity(dto.getQuantity());
 
-@Override
-public void updateSocks(UUID id, SocksDtoIn dto) {
-    Socks existingSocks = socksRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Socks not found with id: " + id));
+        socksRepository.save(existingSocks);
+    }
 
-    existingSocks.setColor(dto.getColor());
-    existingSocks.setCottonPercentage(dto.getCottonPercentage());
-    existingSocks.setQuantity(dto.getQuantity());
+    @Override
+    public void uploadSocksBatch(MultipartFile file) {
 
-    socksRepository.save(existingSocks);
-}
+    }
 
-@Override
-public void uploadSocksBatch(MultipartFile file) {
-
-}
+    @Override
+    public List<Socks> getSocksByPercentageRange(Integer minCottonPercentage, Integer maxCottonPercentage, String sortBy, boolean ascending) {
+        return socksRepository.findSocksByCottonPercentageRangeAndSort(minCottonPercentage,maxCottonPercentage,sortBy,ascending);
+    }
 }
