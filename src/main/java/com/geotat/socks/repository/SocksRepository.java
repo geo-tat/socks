@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface SocksRepository extends JpaRepository<Socks, UUID> {
+public interface SocksRepository extends JpaRepository<Socks, UUID>, CustomSocksRepository {
     Socks findByColorAndCottonPercentage(Color color, Integer cottonPercentage);
 
     @Query("SELECT SUM(s.quantity) FROM Socks s WHERE s.color = :color AND s.cottonPercentage > :cottonPercentage")

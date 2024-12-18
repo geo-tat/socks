@@ -13,7 +13,7 @@ public interface SocksService {
 
     void decreaseSocks(@Valid SocksDtoIn dto);
 
-    Long getSocks(Color color, ComparisonOperator operator, int cottonPercentage);
+    Long getSocks(Color color, ComparisonOperator operator, Integer cottonPercentage);
 
     void updateSocks(UUID id, @Valid SocksDtoIn dto);
 
