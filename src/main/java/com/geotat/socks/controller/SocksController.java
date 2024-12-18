@@ -3,6 +3,7 @@ package com.geotat.socks.controller;
 import com.geotat.socks.dto.SocksDtoIn;
 import com.geotat.socks.enums.Color;
 import com.geotat.socks.enums.ComparisonOperator;
+import com.geotat.socks.model.Socks;
 import com.geotat.socks.service.SocksService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -48,6 +50,17 @@ public class SocksController {
     ) {
         Long result = socksService.getSocks(color, operator, cottonPercentage);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Socks>> getSocksByCottonPercentageRange(
+            @RequestParam(value = "minCottonPercentage", required = false) Integer minCottonPercentage,
+            @RequestParam(value = "maxCottonPercentage", required = false) Integer maxCottonPercentage,
+            @RequestParam(value = "sortBy", defaultValue = "cottonPercentage") String sortBy,
+            @RequestParam(value = "ascending", defaultValue = "true") boolean ascending
+    ) {
+        return ResponseEntity.ok().body(socksService.getSocksByPercentageRange(minCottonPercentage, maxCottonPercentage,
+                sortBy, ascending));
     }
 
     @PutMapping("/{id}")

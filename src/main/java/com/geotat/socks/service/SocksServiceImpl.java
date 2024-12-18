@@ -12,6 +12,7 @@ import com.geotat.socks.util.SocksMapper;
 import com.opencsv.CSVReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,10 +70,12 @@ public class SocksServiceImpl implements SocksService {
     public void updateSocks(UUID id, SocksDtoIn dto) {
         Socks existingSocks = socksRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Socks not found with id: " + id));
-
-        existingSocks.setColor(dto.getColor());
-        existingSocks.setCottonPercentage(dto.getCottonPercentage());
-        existingSocks.setQuantity(dto.getQuantity());
+        if (dto.getColor() != null)
+            existingSocks.setColor(dto.getColor());
+        if (dto.getCottonPercentage() != null)
+            existingSocks.setCottonPercentage(dto.getCottonPercentage());
+        if (dto.getQuantity() != null)
+            existingSocks.setQuantity(dto.getQuantity());
 
         socksRepository.save(existingSocks);
     }
@@ -80,6 +83,12 @@ public class SocksServiceImpl implements SocksService {
     @Override
     public void uploadSocksBatch(MultipartFile file) {
 
+    }
+
+    @Override
+    public List<Socks> getSocksByPercentageRange(Integer minCottonPercentage, Integer maxCottonPercentage, String sortBy, boolean ascending) {
+        return socksRepository.findSocksByCottonPercentageRangeAndSort(minCottonPercentage,maxCottonPercentage,sortBy,ascending);
+    }
         try (CSVReader csvReader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
             String[] line;
             List<SocksDtoIn> socksList = new ArrayList<>();

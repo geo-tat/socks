@@ -60,4 +60,44 @@ public class CustomSocksRepositoryImpl implements CustomSocksRepository {
         return result != null ? result : 0L;
     }
 
+    @Override
+    public List<Socks> findSocksByCottonPercentageRangeAndSort(Integer minCottonPercentage, Integer maxCottonPercentage, String sortBy, boolean ascending) {
+
+        if (minCottonPercentage != null && maxCottonPercentage != null && minCottonPercentage > maxCottonPercentage) {
+            throw new NotValidParametersException("Min cotton percentage cannot be greater than max cotton percentage.");
+        }
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Socks> query = cb.createQuery(Socks.class);
+        Root<Socks> root = query.from(Socks.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (minCottonPercentage != null) {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("cottonPercentage"), minCottonPercentage));
+        }
+
+        if (maxCottonPercentage != null) {
+            predicates.add(cb.lessThanOrEqualTo(root.get("cottonPercentage"), maxCottonPercentage));
+        }
+
+        query.where(predicates.toArray(new Predicate[0]));
+
+        if (sortBy != null) {
+            if (sortBy.equalsIgnoreCase("color")) {
+                if (ascending) {
+                    query.orderBy(cb.asc(root.get("color")));
+                } else {
+                    query.orderBy(cb.desc(root.get("color")));
+                }
+            } else if (sortBy.equalsIgnoreCase("cottonPercentage")) {
+                if (ascending) {
+                    query.orderBy(cb.asc(root.get("cottonPercentage")));
+                } else {
+                    query.orderBy(cb.desc(root.get("cottonPercentage")));
+                }
+            }
+        }
+        return entityManager.createQuery(query).getResultList();
+    }
 }
