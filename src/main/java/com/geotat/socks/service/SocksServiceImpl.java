@@ -78,7 +78,7 @@ public class SocksServiceImpl implements SocksService {
     @Override
     public void updateSocks(UUID id, SocksDtoIn dto) {
         Socks existingSocks = socksRepository.findById(id)
-                .orElseThrow(() ->{
+                .orElseThrow(() -> {
                     log.warn("Socks not found with ID: {}", id);
                     return new EntityNotFoundException("Socks not found with id: " + id);
                 });
@@ -139,6 +139,6 @@ public class SocksServiceImpl implements SocksService {
     public List<Socks> getSocksByPercentageRange(Integer minCottonPercentage, Integer maxCottonPercentage,
                                                  String sortBy, boolean ascending) {
         return socksRepository.findSocksByCottonPercentageRangeAndSort(minCottonPercentage,
-                maxCottonPercentage,sortBy,ascending);
+                maxCottonPercentage, sortBy, ascending);
     }
 }

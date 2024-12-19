@@ -9,5 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface SocksRepository extends JpaRepository<Socks, UUID>, CustomSocksRepository {
+
     Socks findByColorAndCottonPercentage(Color color, Integer cottonPercentage);
 }

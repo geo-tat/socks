@@ -1,8 +1,6 @@
 package com.geotat.socks.model;
 
-import com.geotat.socks.annotation.Percentage;
 import com.geotat.socks.enums.Color;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

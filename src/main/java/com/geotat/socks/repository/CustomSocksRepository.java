@@ -8,6 +8,8 @@ import java.util.List;
 
 
 public interface CustomSocksRepository {
+
     Long findTotalQuantityByCriteria(Color color, Integer cottonPercentage, ComparisonOperator operator);
+
     List<Socks> findSocksByCottonPercentageRangeAndSort(Integer minCottonPercentage, Integer maxCottonPercentage, String sortBy, boolean ascending);
 }
