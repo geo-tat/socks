@@ -64,7 +64,6 @@ public class SocksController {
     public ResponseEntity<Void> registerOutcome(@RequestBody @Valid SocksDtoIn dto) {
         log.info("Registering outcome for socks: {}", dto);
         socksService.decreaseSocks(dto);
-        log.info("Successfully registered outcome for socks: {}", dto);
         return ResponseEntity.ok().build();
     }
 
@@ -84,7 +83,6 @@ public class SocksController {
     ) {
         log.info("Fetching socks with parameters - color: {}, operator: {}, cottonPercentage: {}", color, operator, cottonPercentage);
         Long result = socksService.getSocks(color, operator, cottonPercentage);
-        log.info("Fetched socks count: {}", result);
         return ResponseEntity.ok(result);
     }
 

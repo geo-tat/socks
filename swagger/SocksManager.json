@@ -1,0 +1,436 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Socks Manager",
+    "contact": {
+      "name": "Tatevosian Georgii"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "API Socks",
+      "description": "API для управления складом носков"
+    }
+  ],
+  "paths": {
+    "/api/socks/{id}": {
+      "put": {
+        "tags": [
+          "API Socks"
+        ],
+        "summary": "Обновить данные носков",
+        "description": "Этот эндпоинт позволяет обновить данные носков по их ID (например, цвет, процент хлопка, количество).",
+        "operationId": "updateSocks",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SocksDtoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Неверные параметры запроса"
+          },
+          "404": {
+            "description": "Сущность не найдена"
+          },
+          "200": {
+            "description": "Успешное завершение операции"
+          }
+        }
+      }
+    },
+    "/api/socks/outcome": {
+      "post": {
+        "tags": [
+          "API Socks"
+        ],
+        "summary": "Регистрация списания носков со склада",
+        "description": "Этот эндпоинт позволяет списывать носки со склада.",
+        "operationId": "registerOutcome",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SocksDtoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Неверные параметры запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Успешное завершение операции"
+          }
+        }
+      }
+    },
+    "/api/socks/income": {
+      "post": {
+        "tags": [
+          "API Socks"
+        ],
+        "summary": "Регистрация поступления носков на склад",
+        "description": "Этот эндпоинт позволяет зарегистрировать поступление носков на склад, добавив их с заданным процентом хлопка и количеством.",
+        "operationId": "registerIncome",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SocksDtoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Неверные параметры запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Успешное завершение операции"
+          }
+        }
+      }
+    },
+    "/api/socks/batch": {
+      "post": {
+        "tags": [
+          "API Socks"
+        ],
+        "summary": "Загрузить партию носков",
+        "description": "Этот эндпоинт позволяет загрузить CSV файл с партиями носков, содержащими цвет, процентное содержание хлопка и количество.",
+        "operationId": "uploadSocksBatch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "Файл с данными расширения .csv",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Ошибка при загрузке из файла"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Успешное завершение операции"
+          }
+        }
+      }
+    },
+    "/api/socks": {
+      "get": {
+        "tags": [
+          "API Socks"
+        ],
+        "summary": "Получить количество носков по фильтрам",
+        "description": "Этот эндпоинт позволяет получить количество носков на складе по фильтрам цвета, процента хлопка и оператора сравнения.",
+        "operationId": "getSocks",
+        "parameters": [
+          {
+            "name": "color",
+            "in": "query",
+            "description": "Цвет носков",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "WHITE",
+                "BLACK",
+                "GREEN",
+                "YELLOW",
+                "BLUE",
+                "GREY",
+                "DARK_GREY",
+                "PINK",
+                "RED"
+              ]
+            }
+          },
+          {
+            "name": "operator",
+            "in": "query",
+            "description": "Оператор сравнения процентного содержания хлопка",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "MORE_THAN",
+                "LESS_THAN",
+                "EQUAL"
+              ]
+            }
+          },
+          {
+            "name": "cottonPercentage",
+            "in": "query",
+            "description": "Процентное содержание хлопка (целое число)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Неверные параметры запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Успешное завершение операции",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/socks/list": {
+      "get": {
+        "tags": [
+          "API Socks"
+        ],
+        "summary": "Получить список носков по диапазону процентного содержания хлопка",
+        "description": "Этот эндпоинт позволяет получить список носков в пределах заданного диапазона процентного содержания хлопка с возможностью сортировки по цвету или процентному содержанию хлопка.",
+        "operationId": "getSocksByCottonPercentageRange",
+        "parameters": [
+          {
+            "name": "minCottonPercentage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "maxCottonPercentage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "cottonPercentage"
+            }
+          },
+          {
+            "name": "ascending",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Неверные параметры запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Успешное завершение операции",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Socks"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "exception": {
+            "type": "string",
+            "description": "Тип исключения"
+          },
+          "sourceClass": {
+            "type": "string",
+            "description": "Класс-источник исключения"
+          },
+          "message": {
+            "type": "string",
+            "description": "Сообщение об ошибке"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Метка времени ошибки",
+            "format": "date-time"
+          }
+        },
+        "description": "Ошибка ответа"
+      },
+      "SocksDtoIn": {
+        "type": "object",
+        "properties": {
+          "color": {
+            "type": "string",
+            "description": "Цвет",
+            "enum": [
+              "WHITE",
+              "BLACK",
+              "GREEN",
+              "YELLOW",
+              "BLUE",
+              "GREY",
+              "DARK_GREY",
+              "PINK",
+              "RED",
+              "WHITE,\nBLACK,\nGREEN,\nYELLOW,\nBLUE,\nGREY,\nDARK_GREY,\nPINK,\nRED"
+            ]
+          },
+          "cottonPercentage": {
+            "type": "integer",
+            "description": "Процент содержания хлопка",
+            "format": "int32"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Количество штук",
+            "format": "int64"
+          }
+        }
+      },
+      "Socks": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "color": {
+            "type": "string",
+            "enum": [
+              "WHITE",
+              "BLACK",
+              "GREEN",
+              "YELLOW",
+              "BLUE",
+              "GREY",
+              "DARK_GREY",
+              "PINK",
+              "RED"
+            ]
+          },
+          "cottonPercentage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    }
+  }
+}

@@ -40,7 +40,7 @@ public class SocksServiceImpl implements SocksService {
                     dto.getColor(), dto.getCottonPercentage());
             existingSocks.setQuantity(existingSocks.getQuantity() + dto.getQuantity());
             socksRepository.save(existingSocks);
-            log.info("Successfully added existing socks: {}", existingSocks);
+            log.info("Successfully added. New quantity={}", existingSocks.getQuantity());
         } else {
             socksRepository.save(entityToSave);
             log.info("Successfully added new socks: {}", entityToSave);
@@ -65,7 +65,7 @@ public class SocksServiceImpl implements SocksService {
 
         existingSocks.setQuantity(existingSocks.getQuantity() - dto.getQuantity());
         socksRepository.save(existingSocks);
-        log.info("Successfully decreased socks: {}", existingSocks);
+        log.info("Successfully decreased socks. New quantity={}", existingSocks.getQuantity());
     }
 
     @Override
