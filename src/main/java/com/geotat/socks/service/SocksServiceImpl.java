@@ -12,7 +12,6 @@ import com.geotat.socks.util.SocksMapper;
 import com.opencsv.CSVReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,10 +36,14 @@ public class SocksServiceImpl implements SocksService {
                 dto.getColor(), dto.getCottonPercentage());
 
         if (existingSocks != null) {
+            log.debug("Socks already exist. Updating quantity for color: {}, cottonPercentage: {}",
+                    dto.getColor(), dto.getCottonPercentage());
             existingSocks.setQuantity(existingSocks.getQuantity() + dto.getQuantity());
             socksRepository.save(existingSocks);
+            log.info("Successfully added existing socks: {}", existingSocks);
         } else {
             socksRepository.save(entityToSave);
+            log.info("Successfully added new socks: {}", entityToSave);
         }
     }
 
@@ -49,27 +52,36 @@ public class SocksServiceImpl implements SocksService {
         Socks existingSocks = socksRepository.findByColorAndCottonPercentage(
                 dto.getColor(), dto.getCottonPercentage());
 
-        if (existingSocks == null)
+        if (existingSocks == null) {
+            log.warn("No socks found with color: {} and cottonPercentage: {}",
+                    dto.getColor(), dto.getCottonPercentage());
             throw new NotValidParametersException("Socks not found with specified parameters");
-
-        if (existingSocks.getQuantity() < dto.getQuantity())
+        }
+        if (existingSocks.getQuantity() < dto.getQuantity()) {
+            log.warn("Not enough socks in stock. Requested: {}, Available: {}",
+                    dto.getQuantity(), existingSocks.getQuantity());
             throw new SocksNotEnoughException("Not enough socks in stock");
-
+        }
 
         existingSocks.setQuantity(existingSocks.getQuantity() - dto.getQuantity());
         socksRepository.save(existingSocks);
+        log.info("Successfully decreased socks: {}", existingSocks);
     }
 
     @Override
     public Long getSocks(Color color, ComparisonOperator operator, Integer cottonPercentage) {
         Long quantity = socksRepository.findTotalQuantityByCriteria(color, cottonPercentage, operator);
+        log.info("Fetched socks count: {}", quantity != null ? quantity : 0L);
         return quantity != null ? quantity : 0L;
     }
 
     @Override
     public void updateSocks(UUID id, SocksDtoIn dto) {
         Socks existingSocks = socksRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Socks not found with id: " + id));
+                .orElseThrow(() ->{
+                    log.warn("Socks not found with ID: {}", id);
+                    return new EntityNotFoundException("Socks not found with id: " + id);
+                });
         if (dto.getColor() != null)
             existingSocks.setColor(dto.getColor());
         if (dto.getCottonPercentage() != null)
@@ -78,6 +90,7 @@ public class SocksServiceImpl implements SocksService {
             existingSocks.setQuantity(dto.getQuantity());
 
         socksRepository.save(existingSocks);
+        log.info("Successfully updated socks: {}", existingSocks);
     }
 
     @Override
