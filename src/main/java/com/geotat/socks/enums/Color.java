@@ -1,7 +1,5 @@
 package com.geotat.socks.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 public enum Color {
     WHITE,
     BLACK,
@@ -10,5 +8,6 @@ public enum Color {
     BLUE,
     GREY,
     DARK_GREY,
-    PINK
+    PINK,
+    RED
 }

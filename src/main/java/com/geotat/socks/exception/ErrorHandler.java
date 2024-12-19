@@ -22,7 +22,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleValidationException(MethodArgumentNotValidException e) {
-        log.error("Ошибка валидации сущности", e);
+        log.error("Validation fail", e);
         return new ErrorResponse(e.getClass().getSimpleName(),
                 Arrays.stream(e.getStackTrace()).findFirst().toString(),
                 e.getBindingResult().getFieldErrors().stream()
@@ -34,7 +34,6 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleEntityNotFoundException(final EntityNotFoundException e) {
-        log.error("Сущность с данным ID не найдена.", e);
         return new ErrorResponse(e.getClass().getSimpleName(),
                 Arrays.stream(e.getStackTrace()).findFirst().toString(),
                 e.getMessage(),
@@ -44,7 +43,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotValidParametersException(final NotValidParametersException e) {
-        log.error("Socks not found with specified parameters", e);
+        log.warn("Socks not found with specified parameters", e);
         return new ErrorResponse(e.getClass().getSimpleName(),
                 Arrays.stream(e.getStackTrace()).findFirst().toString(),
                 e.getMessage(),
@@ -54,7 +53,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleSocksNotEnoughException(final SocksNotEnoughException e) {
-        log.error("Not enough socks in stock", e);
+        log.warn("Not enough socks in stock", e);
         return new ErrorResponse(e.getClass().getSimpleName(),
                 Arrays.stream(e.getStackTrace()).findFirst().toString(),
                 e.getMessage(),
@@ -76,7 +75,7 @@ public class ErrorHandler {
     @ExceptionHandler(InvalidFormatFileException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidFormatFileException(final InvalidFormatFileException e) {
-        log.error("Invalid value for Enum class Color", e);
+        log.error("Invalid format of data", e);
         return new ErrorResponse(
                 e.getClass().getSimpleName(),
                 Arrays.stream(e.getStackTrace()).findFirst().toString(),

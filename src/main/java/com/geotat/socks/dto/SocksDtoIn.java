@@ -27,7 +27,8 @@ public class SocksDtoIn {
             BLUE,
             GREY,
             DARK_GREY,
-            PINK"""})
+            PINK,
+            RED"""})
     private Color color;
 
     @Percentage
